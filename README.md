@@ -12,3 +12,6 @@ https://blog.csdn.net/kanshanxd/article/details/130689471?spm=1001.2014.3001.550
 ### 视频：
 
 https://www.bilibili.com/video/BV15o4y157Wm/?vd_source=701807c4f8684b13e922d0a8b116af31
+
+本仓库原始代码来源于b站博主，原链接如上，新建仓库目的是代码级别的注释不利于新人，所以在此仓库中添加保姆级的注释。
+
