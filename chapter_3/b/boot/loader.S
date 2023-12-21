@@ -1,5 +1,5 @@
 %include "boot.inc"
-section loader vstart=LOADER_BASE_ADDR
+section loader vstart=LOADER_BASE_ADDR ;查看实模式的布局可以知道，这个是可用位置。
 
                                     ; 输出背景色绿色，前景色红色，并且跳动的字符串"1 MBR"
 mov byte [gs:0x00],'2'

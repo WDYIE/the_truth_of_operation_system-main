@@ -56,18 +56,18 @@ SECTION MBR vstart=0x7c00
        
                                     ;-------------------------------------------------------------------------------
                                     ;功能:读取硬盘n个扇区
-rd_disk_m_16:	                    ;使用eax bx cx 寄存器用作该函数的参数
+rd_disk_m_16:	   
                                     ;-------------------------------------------------------------------------------
 				                    ; eax=LBA扇区号
 				                    ; ebx=将数据写入的内存地址
 				                    ; ecx=读入的扇区数
-    mov esi,eax	                    ;备份eax,
+    mov esi,eax	                    ;备份eax
     mov di,cx		                ;备份cx
                                     ;读写硬盘:
                                     ;第1步：选择特定通道的寄存器，设置要读取的扇区数
     mov dx,0x1f2
     mov al,cl
-    out dx,al                       ;读取的扇区数,in和out指令默认为使用al ax寄存器
+    out dx,al                       ;读取的扇区数
 
     mov eax,esi	                    ;恢复ax
 
@@ -78,7 +78,7 @@ rd_disk_m_16:	                    ;使用eax bx cx 寄存器用作该函数的参数
 
                                     ;LBA地址15~8位写入端口0x1f4
     mov cl,8
-    shr eax,cl                      ;右移动8位 
+    shr eax,cl
     mov dx,0x1f4
     out dx,al
 
@@ -89,12 +89,12 @@ rd_disk_m_16:	                    ;使用eax bx cx 寄存器用作该函数的参数
 
     shr eax,cl
     and al,0x0f	                    ;lba第24~27位
-    or al,0xe0	                    ; 设置7～4位为1110,表示lba模式 
-    mov dx,0x1f6                    ;0x1f6device 寄存器
+    or al,0xe0	                    ; 设置7～4位为1110,表示lba模式
+    mov dx,0x1f6
     out dx,al
 
                                     ;第3步：向0x1f7端口写入读命令，0x20 
-    mov dx,0x1f7                    ;out 为写命令，对应0x1f7为command寄存器 0x20为读命令
+    mov dx,0x1f7
     mov al,0x20                        
     out dx,al
 
