@@ -59,8 +59,8 @@ loader_start:
     mov eax, [ebx]	                                    ;base_add_low
     add eax, [ebx+8]	                                ;length_low
     add ebx, 20		                                    ;指向缓冲区中下一个ARDS结构
-    cmp edx, eax		                                ;冒泡排序，找出最大,edx寄存器始终是最大的内存容量
-    jge .next_ards
+    cmp edx, eax		                                ;找出最大,edx寄存器始终是最大的内存容量
+    jge .next_ards                                      ;edx是最大的，则跳过对edx赋值
     mov edx, eax		                                ;edx为总内存大小
 .next_ards:
     loop .find_max_mem_area

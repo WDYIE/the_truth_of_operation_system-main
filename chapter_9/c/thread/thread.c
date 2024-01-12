@@ -70,7 +70,7 @@ void init_thread(struct task_struct* pthread, char* name, int prio) {
    pthread->elapsed_ticks = 0;
    pthread->pgdir = NULL;	//线程没有自己的地址空间，进程的pcb这一项才有用，指向自己的页表虚拟地址	
    pthread->self_kstack = (uint32_t*)((uint32_t)pthread + PG_SIZE);     //本操作系统比较简单，线程不会太大，就将线程栈顶定义为pcb地址
-                                                                        //+4096的地方，这样就留了一页给线程的信息（包含管理信息与运行信息）空间
+                                                                        //+4096的地方，这样就留了一页给线程的信息（包含管理信息与运行信息）空间。就是线程+栈空间一共只有4KB。
    pthread->stack_magic = 0x19870916;	                                // /定义的边界数字，随便选的数字来判断线程的栈是否已经生长到覆盖pcb信息了              
 }
 

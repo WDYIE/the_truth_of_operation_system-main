@@ -4,7 +4,7 @@ ENTRY_POINT=0xc0001500
 HD60M_PATH=/home/rlk/Desktop/bochs/hd60M.img
 #只需要把hd60m.img路径改成自己环境的路径，整个代码直接make all就完全写入了，能够运行成功
 AS=nasm
-CC=gcc-4.4
+CC=gcc-4.4ff
 LD=ld
 LIB= -I lib/ -I lib/kernel/ -I lib/user/ -I kernel/ -I device/ -I thread/
 ASFLAGS= -f elf
@@ -59,7 +59,6 @@ $(BUILD_DIR)/memory.o:kernel/memory.c
 
 $(BUILD_DIR)/thread.o:thread/thread.c
 	$(CC) $(CFLAGS) -o $@ $<
-
 $(BUILD_DIR)/list.o:lib/kernel/list.c
 	$(CC) $(CFLAGS) -o $@ $<
 ###################编译汇编内核代码#####################################################

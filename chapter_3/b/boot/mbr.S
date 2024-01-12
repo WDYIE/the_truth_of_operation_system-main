@@ -66,29 +66,29 @@ rd_disk_m_16:
                                     ;读写硬盘:
                                     ;第1步：选择特定通道的寄存器，设置要读取的扇区数
     mov dx,0x1f2
-    mov al,cl
-    out dx,al                       ;读取的扇区数
+    mov al,cl                       ;cx为1，cl则为1
+    out dx,al                       ;读取的扇区数，0x1f2端口号对应Sector count寄存器。
 
     mov eax,esi	                    ;恢复ax
 
                                     ;第2步：在特定通道寄存器中放入要读取扇区的地址，将LBA地址存入0x1f3 ~ 0x1f6
                                     ;LBA地址7~0位写入端口0x1f3
-    mov dx,0x1f3                       
-    out dx,al                          
+    mov dx,0x1f3                    ;LBA low 寄存器 
+    out dx,al                       ;在50行的时候，就将loader所在的硬盘lba地址存入exa了。
 
                                     ;LBA地址15~8位写入端口0x1f4
-    mov cl,8
-    shr eax,cl
-    mov dx,0x1f4
+    mov cl,8                        
+    shr eax,cl                       ;右移8位,因为7-0已经存入low寄存器了。
+    mov dx,0x1f4                     ;LBA mid 寄存器 
     out dx,al
 
                                     ;LBA地址23~16位写入端口0x1f5
     shr eax,cl
-    mov dx,0x1f5
+    mov dx,0x1f5                     ;LBA high 寄存器 
     out dx,al
 
     shr eax,cl
-    and al,0x0f	                    ;lba第24~27位
+    and al,0x0f	                    ;and 操作取低四位，lba第24~27位 lba28只有28位，
     or al,0xe0	                    ; 设置7～4位为1110,表示lba模式
     mov dx,0x1f6
     out dx,al
@@ -104,21 +104,21 @@ rd_disk_m_16:
     nop
     in al,dx
     and al,0x88	                    ;第4位为1表示硬盘控制器已准备好数据传输，第7位为1表示硬盘忙
-    cmp al,0x08
-    jnz .not_ready	                ;若未准备好，继续等。
+    cmp al,0x08                     ;al-0x08 如果相等,ZF置位为1。JE可以调转。不相等，ZF置零，双重否定表示结果非零。
+    jnz .not_ready	                ;不相等，若未准备好，继续等。
 
                                     ;第5步：从0x1f0端口读数据
-    mov ax, di                      ;di当中存储的是要读取的扇区数
+    mov ax, di                      ;di当中存储的是要读取的扇区数，65行备份到di为1.
     mov dx, 256                     ;每个扇区512字节，一次读取两个字节，所以一个扇区就要读取256次，与扇区数相乘，就等得到总读取次数
-    mul dx                          ;8位乘法与16位乘法知识查看书p133,注意：16位乘法会改变dx的值！！！！
-    mov cx, ax	                    ; 得到了要读取的总次数，然后将这个数字放入cx中
+    mul dx                          ;p133,dx16位，被乘数隐藏在ax中，乘积是32位的，高16位放在dx中，低16位放在ax中。
+    mov cx, ax	                    ;结果256显然结果只影响了ax，cx用于控制循环次数。
     mov dx, 0x1f0
 .go_on_read:
-    in ax,dx
-    mov [bx],ax
-    add bx,2		  
-    loop .go_on_read
-    ret
+    in ax,dx                        ;磁盘准备好后，数据端口存放的为2个字节数据。
+    mov [bx],ax                     ;[bx]表示bx所指向的地址，实模式下bx bp是基地址寄存器，用于基址寻址。
+    add bx,2		                ;将地址往后摞动两个字节
+    loop .go_on_read                ;LOOP指令会将CX寄存器的值减1，并将程序控制权转移到.go_on_read处执行，直到CX寄存器的值为0时结束循环
+    ret                             ;函数rd_disk_m_16返回。
 
     times 510-($-$$) db 0
     db 0x55,0xaa

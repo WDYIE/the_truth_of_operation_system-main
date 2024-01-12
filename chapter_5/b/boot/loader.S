@@ -2,7 +2,7 @@
 section loader vstart=LOADER_BASE_ADDR
 LOADER_STACK_TOP equ LOADER_BASE_ADDR
                                                 
-GDT_BASE:                                               ;构建gdt及其内部的描述符
+GDT_BASE:                                               ;构建gdt及其内部的描述符 GDT_BASE做为GDT的标签，标签（Labels）是用于标识代码或数据位置的标识符
     dd 0x00000000 
 	dd 0x00000000
 
@@ -78,7 +78,7 @@ loader_start:
     out 0x92,al
 
                                                          ;-----------------  加载GDT  ----------------
-    lgdt [gdt_ptr]
+    lgdt [gdt_ptr]                                        ;gdt_ptr本身是地址，[]表示取值 %info gdt 可以查看值
 
 
                                                         ;-----------------  cr0第0位置1  ----------------
@@ -109,7 +109,7 @@ p_mode_start:
     mov ebx, [gdt_ptr + 2]                              ;ebx中存着GDT_BASE
     or dword [ebx + 0x18 + 4], 0xc0000000               ;视频段是第3个段描述符,每个描述符是8字节,故0x18 = 24，然后+4，是取出了视频段段描述符的高4字节。然后or操作，段基址最高位+c
                                            
-    add dword [gdt_ptr + 2], 0xc0000000                 ;将gdt的基址加上0xc0000000使其成为内核所在的高地址
+    add dword [gdt_ptr + 2], 0xc0000000                 ;将gdt的基址加上0xc0000000使其成为内核所在的高地址，gdt原来的是物理地址，现在内存存的是虚拟地址空间。
 
     add esp, 0xc0000000                                 ; 将栈指针同样映射到内核地址
 

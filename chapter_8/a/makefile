@@ -1,11 +1,11 @@
 #定义一大堆变量，实质就是将需要多次重复用到的语句定义一个变量方便使用与替换
 BUILD_DIR=./build
 ENTRY_POINT=0xc0001500
-HD60M_PATH=/home/rlk/Desktop/bochs/hd60M.img
+HD60M_PATH=/Users/wangjie/03\ kernel/mac_bochs/hd60M.img
 #只需要把hd60m.img路径改成自己环境的路径，整个代码直接make all就完全写入了，能够运行成功
 AS=nasm
-CC=gcc-4.4
-LD=ld
+CC=x86_64-elf-gcc
+LD=x86_64-elf-ld
 LIB= -I lib/ -I lib/kernel/ -I lib/user/ -I kernel/ -I device/
 ASFLAGS= -f elf
 CFLAGS= -Wall $(LIB) -c -fno-builtin -W -Wstrict-prototypes -Wmissing-prototypes -m32

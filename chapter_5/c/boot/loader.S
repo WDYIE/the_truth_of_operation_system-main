@@ -26,7 +26,7 @@ VIDEO_DESC:
     SELECTOR_VIDEO equ (0x0003<<3) + TI_GDT + RPL0	    ; 同上 
 
 total_mem_bytes dd 0				                    ; total_mem_bytes用于保存内存容量,以字节为单位,此位置比较好记。
-                                                        ; 当前偏移loader.bin文件头0x200字节,loader.bin的加载地址是0x900,
+                                                        ; 当前偏移相对于loader.bin文件头0x200字节,loader.bin的加载地址是0x900,
                                                         ; 故total_mem_bytes内存中的地址是0xb00.将来在内核中咱们会引用此地址	 
                                                         
 gdt_ptr dw GDT_LIMIT                                    ;定义加载进入GDTR的数据，前2字节是gdt界限，后4字节是gdt起始地址，
